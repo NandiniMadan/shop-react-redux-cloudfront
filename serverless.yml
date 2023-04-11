@@ -21,6 +21,8 @@ custom:
   client:
     bucketName: magnum-task2
     distributionFolder: dist
+    indexDocument: index.html
+    errorDocument: index.html
   s3BucketName: ${self:custom.client.bucketName}
 
   ## Serverless-single-page-app-plugin configuration:

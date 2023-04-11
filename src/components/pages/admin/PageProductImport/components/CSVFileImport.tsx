@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
+import LoginModal from "~/components/LoginModal/LoginModal";
 
 
 type CSVFileImportProps = {
@@ -16,6 +17,7 @@ const ERR_ON_UPLOAD = "File upload failed";
 
 export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const [file, setFile] = useState<File>();
+  const [loginModalOpened, setLoginModalOpened] = useState(false);
   const [isOpenToaster, setToasterState] = useState(false);
   const [toasterSeverity, setToasterSeverity] = useState<null | boolean>(null);
 
@@ -34,6 +36,10 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const handleToaster = useCallback(() => {
     setToasterState((state) => !state);
   }, [isOpenToaster]);
+
+  const handleLoginModalClose = () => {
+    setLoginModalOpened(false);
+  };
 
   const uploadFile = async () => {
     console.log("uploadFile to", url);
@@ -72,35 +78,42 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
       });
   };
   return (
-    <Box>
+    <>
+      <Box>
 
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
-      {!file ? (
-        <input type="file" onChange={onFileChange} />
-      ) : (
-        <div>
-          <button onClick={removeFile}>Remove file</button>
-          <button onClick={uploadFile}>Upload file</button>
-        </div>
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
+        {!file ? (
+          <input type="file" onChange={onFileChange} />
+        ) : (
+          <div>
+            <button onClick={removeFile}>Remove file</button>
+            <button onClick={uploadFile}>Upload file</button>
+          </div>
 
-      )}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={isOpenToaster}
-        onClose={handleToaster}
-        resumeHideDuration={2000}
-      >
-        <Alert
+        )}
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={isOpenToaster}
           onClose={handleToaster}
-          severity={toasterSeverity ? "success" : "error"}
-          sx={{ width: "100%" }}
+          resumeHideDuration={2000}
         >
-          {`${toasterSeverity ? UPLOADED_MESSAGE : ERR_ON_UPLOAD
-            }`}
-        </Alert>
-      </Snackbar>
-    </Box>
+          <Alert
+            onClose={handleToaster}
+            severity={toasterSeverity ? "success" : "error"}
+            sx={{ width: "100%" }}
+          >
+            {`${toasterSeverity ? UPLOADED_MESSAGE : ERR_ON_UPLOAD
+              }`}
+          </Alert>
+        </Snackbar>
+      </Box>
+      <LoginModal
+        open={loginModalOpened}
+        onClose={handleLoginModalClose}
+        onLogin={uploadFile}
+      />
+    </>
   );
 }

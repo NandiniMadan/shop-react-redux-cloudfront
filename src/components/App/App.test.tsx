@@ -9,6 +9,7 @@ import { AvailableProduct } from "~/models/Product";
 import { renderWithProviders } from "~/testUtils";
 import { screen, waitForElementToBeRemoved } from "@testing-library/react";
 import { formatAsPrice } from "~/utils/utils";
+import API_VERSIONS from "~/constants/apiVersions";
 
 test("Renders products list", async () => {
   const products: AvailableProduct[] = [
@@ -18,6 +19,8 @@ test("Renders products list", async () => {
       description: "Product 1 description",
       price: 1,
       count: 1,
+      categoryId: "11",
+      images: [],
     },
     {
       id: "2",
@@ -25,16 +28,21 @@ test("Renders products list", async () => {
       description: "Product 2 description",
       price: 2,
       count: 2,
+      categoryId: "22",
+      images: [],
     },
   ];
   server.use(
-    rest.get(`${API_PATHS.bff}/product/available`, (req, res, ctx) => {
-      return res(
-        ctx.status(200),
-        ctx.delay(),
-        ctx.json<AvailableProduct[]>(products)
-      );
-    }),
+    rest.get(
+      `${API_PATHS.product}/${API_VERSIONS.product}/products`,
+      (req, res, ctx) => {
+        return res(
+          ctx.status(200),
+          ctx.delay(),
+          ctx.json<AvailableProduct[]>(products)
+        );
+      }
+    ),
     rest.get(`${API_PATHS.cart}/profile/cart`, (req, res, ctx) => {
       return res(ctx.status(200), ctx.json<CartItem[]>([]));
     })

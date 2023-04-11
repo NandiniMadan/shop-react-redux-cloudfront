@@ -13,7 +13,7 @@ import {
   useUpsertAvailableProduct,
 } from "~/queries/products";
 
-const initialValues: AvailableProduct = AvailableProductSchema.cast({});
+const initialValues = AvailableProductSchema.cast({}) as AvailableProduct;
 
 export default function PageProductForm() {
   const navigate = useNavigate();
@@ -26,9 +26,9 @@ export default function PageProductForm() {
     const formattedValues = AvailableProductSchema.cast(values);
     const productToSave = id
       ? {
-          ...formattedValues,
-          id,
-        }
+        ...formattedValues,
+        id,
+      }
       : formattedValues;
     return upsertAvailableProduct(productToSave, {
       onSuccess: () => {
